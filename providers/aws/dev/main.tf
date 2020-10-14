@@ -37,7 +37,7 @@ module "vpc" {
   tags = {
     Owner       = "richardlloyd"
     Environment = "dev"
-    project = "matchesfashion"
+    project     = "matchesfashion"
   }
 
   vpc_tags = {

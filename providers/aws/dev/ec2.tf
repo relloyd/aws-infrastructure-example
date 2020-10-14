@@ -47,16 +47,16 @@ resource "aws_security_group" "ec2_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "-1"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "TCP"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -82,14 +82,23 @@ resource "aws_network_interface" "this" {
   }
 }
 
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohBK41 email@example.com"
+  tags = {
+    project = "matchesfashion"
+  }
+}
+
 module "ec2_with_network_interface" {
   source = "git::https://github.com/terraform-aws-modules/terraform-aws-ec2-instance?ref=4c8ffba6aaa3e4f8ccf53d97b4b0449493af4014"
 
   instance_count = 1
 
-  name            = "matchesfashion"
-  ami             = data.aws_ami.amazon_linux.id
-  instance_type   = "t3a.nano"
+  name          = "matchesfashion"
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t3a.nano"
+  key_name      = aws_key_pair.deployer.key_name
 
   network_interface = [
     {

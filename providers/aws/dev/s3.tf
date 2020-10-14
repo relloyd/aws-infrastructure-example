@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "bucket" {
   bucket = "matchesfashion.halfpipe.sh"
-  acl = "private"
+  acl    = "private"
   tags = {
     project = "matchesfashion"
   }
