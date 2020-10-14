@@ -35,6 +35,10 @@ data "aws_ami" "amazon_linux" {
       "amazon",
     ]
   }
+
+  tags = {
+    project = "matchesfashion"
+  }
 }
 
 resource "aws_security_group" "ec2_sg" {
@@ -62,12 +66,20 @@ resource "aws_security_group" "ec2_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    project = "matchesfashion"
+  }
 }
 
 resource "aws_network_interface" "this" {
   count = 1
 
   subnet_id = tolist(module.vpc.public_subnets)[count.index]
+
+  tags = {
+    project = "matchesfashion"
+  }
 }
 
 module "ec2_with_network_interface" {
@@ -86,4 +98,8 @@ module "ec2_with_network_interface" {
       delete_on_termination = false
     }
   ]
+
+  tags = {
+    project = "matchesfashion"
+  }
 }
