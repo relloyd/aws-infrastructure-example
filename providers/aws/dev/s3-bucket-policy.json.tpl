@@ -2,19 +2,17 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
+      "Sid": "BucketAccess",
       "Effect": "Allow",
-      "Sid": ""
-    },
-    {
+      "Principal": {
+        "AWS": [
+          "${ec2_instance_role}"
+        ]
+      },
+      "Resource": "*",
       "Action": [
         "s3:*"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
+      ]
+    },
   ]
 }
