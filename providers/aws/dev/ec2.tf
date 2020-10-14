@@ -37,11 +37,9 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-module "security_group" {
-  source  = "git::https://github.com/terraform-aws-modules/terraform-aws-security-group?ref=b6362f88d065457a6f224e99ceec5f58bce6754b"
-
+resource "aws_security_group" "ec2_sg" {
   name        = "matchesfashion"
-  description = "Security group for example usage with EC2 instance"
+  description = "Security group for use with MatchesFashioin EC2 instance"
   vpc_id      = module.vpc.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
@@ -52,7 +50,7 @@ module "security_group" {
 resource "aws_network_interface" "this" {
   count = 1
 
-  subnet_id = tolist(data.aws_subnet_ids.all.ids)[count.index]
+  subnet_id = tolist(module.vpc.public_subnets)[count.index]
 }
 
 module "ec2_with_network_interface" {
@@ -60,10 +58,9 @@ module "ec2_with_network_interface" {
 
   instance_count = 1
 
-  name            = "example-network"
+  name            = "matchesfashion"
   ami             = data.aws_ami.amazon_linux.id
-  instance_type   = "c5.large"
-  placement_group = aws_placement_group.web.id
+  instance_type   = "t3a.nano"
 
   network_interface = [
     {
